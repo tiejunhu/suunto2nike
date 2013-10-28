@@ -216,8 +216,10 @@ public class App
 
 		System.out.println(formatXML(doc));
 
-		String nikeEmail = NikePlus.nikePlusProperties.getProperty(NIKEPLUS_EMAIL);
-		char[] nikePassword = NikePlus.nikePlusProperties.getProperty(NIKEPLUS_PASSWORD).toCharArray();
+		Properties nikePlusUserProperties = getNikePlusUserProperties();
+
+		String nikeEmail = nikePlusUserProperties.getProperty(NIKEPLUS_EMAIL);
+		char[] nikePassword = nikePlusUserProperties.getProperty(NIKEPLUS_PASSWORD).toCharArray();
 		NikePlus u = new NikePlus();
 		u.fullSync(nikeEmail, nikePassword, new Document[] { doc }, null);
 
