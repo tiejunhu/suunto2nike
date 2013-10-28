@@ -27,6 +27,11 @@ How should I use it
 
 Normally you just sync your Quest watch with Moveslink application, then run this app. It will automatically scan all new moves and upload them to your Nike Plus account.
 
+Where to get it
+---------------
+
+[here](https://github.com/oldhu/suunto2nike/releases)
+
 Supported devices
 -----------------
 
@@ -41,3 +46,8 @@ Report Issue/Request Features
 -----------------------------
 
 Use github's issue
+
+Thanks
+------
+
+I use Nike Plus related code from [tcx2nikeplus](https://github.com/angusws/tcx2nikeplus). Thank you.
