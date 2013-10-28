@@ -22,7 +22,22 @@ To upload Moveslink data:
 
 It will scan automatically all the XML files begin with Quest_, move all dupliate ones into a "Duplicates" folder, move all ones contain no moves into a "NoMoves" folder, move all new moves into a "Pending" folder. Then it login into your Nike Plus account and upload all pending XML files into Nike Plus and move the files into the "Uploaded" folder.
 
+How should I use it
+-------------------
+
+Normally you just sync your Quest watch with Moveslink application, then run this app. It will automatically scan all new moves and upload them to your Nike Plus account.
+
 Supported devices
 -----------------
 
 Currently Quest with HR and foot pod only. Because that's what I have.
+
+Supported OS
+------------
+
+Currently Windows only
+
+Report Issue/Request Features
+-----------------------------
+
+Use github's issue
