@@ -2,6 +2,7 @@ package com.oldhu.suunto2nike;
 
 import java.io.File;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,21 +53,32 @@ public class SuuntoXMLParser
 			return null;
 		}
 		
-		SuuntoMove[] suuntoMoves = new SuuntoMove[moveList.getLength()];
-		log.debug(moveList.getLength() + " moves in this file");
+		ArrayList<SuuntoMove> suuntoMoves = new ArrayList<SuuntoMove>();
+		log.debug(moveList.getLength() + " move elements in this file");
 
 		for (int i = 0; i < moveList.getLength(); ++i) {
-			Element move = (Element) moveList.item(i);
-			SuuntoMove suuntoMove = new SuuntoMove();
-			Element header = (Element) move.getElementsByTagName("Header").item(0);
-			parseHeader(header, suuntoMove);
-			Element samples = (Element) move.getElementsByTagName("Samples").item(0);
-			parseSamples(samples, suuntoMove);
+			try {
+				Element move = (Element) moveList.item(i);
+				SuuntoMove suuntoMove = new SuuntoMove();
+				Element header = (Element) move.getElementsByTagName("Header").item(0);
+				parseHeader(header, suuntoMove);
+				Element samples = (Element) move.getElementsByTagName("Samples").item(0);
+				parseSamples(samples, suuntoMove);	
+				suuntoMoves.add(suuntoMove);
+			} catch (Exception e) {
+				log.info("Data invalid in the no. " + (i + 1) + " of the moves");
+			}
 			
-			suuntoMoves[i] = suuntoMove;
 		}
+		
+		if (suuntoMoves.size() == 0) {
+			return null;
+		}
+		
+		SuuntoMove[] moves = new SuuntoMove[suuntoMoves.size()];
+		suuntoMoves.toArray(moves);
 
-		return suuntoMoves;
+		return moves;
 	}
 
 	private void parseSamples(Element samples, SuuntoMove suuntoMove)
