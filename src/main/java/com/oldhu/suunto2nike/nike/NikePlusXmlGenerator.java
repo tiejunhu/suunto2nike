@@ -1,4 +1,4 @@
-package com.oldhu.suunto2nike;
+package com.oldhu.suunto2nike.nike;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import com.oldhu.suunto2nike.SuuntoMove;
 
 public class NikePlusXmlGenerator
 {

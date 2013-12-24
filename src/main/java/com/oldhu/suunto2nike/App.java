@@ -22,6 +22,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import com.oldhu.suunto2nike.nike.NikePlus;
+import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
+
 public class App
 {
 	private static final String NIKEPLUS_PASSWORD = "NIKEPLUS_PASSWORD";
