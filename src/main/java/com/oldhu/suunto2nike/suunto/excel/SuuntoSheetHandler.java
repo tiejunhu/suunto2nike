@@ -1,10 +1,10 @@
-package com.oldhu.suunto2nike.excel;
+package com.oldhu.suunto2nike.suunto.excel;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.oldhu.suunto2nike.moveslink.SuuntoMove;
+import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class SuuntoSheetHandler extends DefaultHandler
 {

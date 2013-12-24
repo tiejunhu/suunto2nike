@@ -1,4 +1,4 @@
-package com.oldhu.suunto2nike.moveslink;
+package com.oldhu.suunto2nike.suunto.moveslink;
 
 import java.io.File;
 import java.text.ParseException;
@@ -15,9 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.oldhu.suunto2nike.suunto.SuuntoMove;
+
 public class SuuntoXMLParser
 {
-	private static Log log = LogFactory.getLog("SuuntoXMLParser");
+	private static Log log = LogFactory.getLog(SuuntoXMLParser.class);
 	private final Pattern durationPattern = Pattern.compile("(\\d+):(\\d+):(\\d+)\\.?(\\d*)");
 
 	private Element moves;

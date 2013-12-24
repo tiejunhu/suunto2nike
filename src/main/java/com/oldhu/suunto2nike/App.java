@@ -12,7 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
-import com.oldhu.suunto2nike.moveslink.MovesLinkFactory;
+import com.oldhu.suunto2nike.suunto.moveslink.MovesLinkFactory;
+import com.oldhu.suunto2nike.suunto.moveslink2.MovesLink2Factory;
 
 public class App
 {
@@ -20,10 +21,20 @@ public class App
 
 	public static void main(String[] args) throws Exception
 	{
-		MovesLinkFactory mlf = MovesLinkFactory.getInstance();
-
-		if (!mlf.checkIfEnvOkay()) {
-			return;
+		if (args.length == 1) {
+			if (args[0].equals("2")) {
+				MovesLink2Factory ml2f = MovesLink2Factory.getInstance();
+				if (!ml2f.checkIfEnvOkay()) {
+					return;
+				}
+				ml2f.uploadXMLFiles();			
+			}
+		} else {
+			MovesLinkFactory mlf = MovesLinkFactory.getInstance();
+			if (!mlf.checkIfEnvOkay()) {
+				return;
+			}
+			mlf.uploadXMLFiles();			
 		}
 
 		// if (args.length == 1) {
@@ -33,7 +44,6 @@ public class App
 		// return;
 		// }
 
-		mlf.uploadXMLFiles();
 	}
 
 	// private static void uploadExcelFile(String fileName) throws Exception

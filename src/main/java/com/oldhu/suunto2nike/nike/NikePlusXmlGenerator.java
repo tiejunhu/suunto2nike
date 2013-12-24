@@ -11,7 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.oldhu.suunto2nike.moveslink.SuuntoMove;
+import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class NikePlusXmlGenerator
 {

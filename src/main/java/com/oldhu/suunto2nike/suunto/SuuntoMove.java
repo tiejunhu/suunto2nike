@@ -1,4 +1,4 @@
-package com.oldhu.suunto2nike.moveslink;
+package com.oldhu.suunto2nike.suunto;
 
 import java.util.ArrayList;
 

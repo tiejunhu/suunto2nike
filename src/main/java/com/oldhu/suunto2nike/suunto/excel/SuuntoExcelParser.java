@@ -1,4 +1,4 @@
-package com.oldhu.suunto2nike.excel;
+package com.oldhu.suunto2nike.suunto.excel;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import com.oldhu.suunto2nike.moveslink.SuuntoMove;
+import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class SuuntoExcelParser
 {

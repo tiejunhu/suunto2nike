@@ -1,4 +1,4 @@
-package com.oldhu.suunto2nike.moveslink;
+package com.oldhu.suunto2nike.suunto.moveslink;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,7 @@ import org.w3c.dom.Document;
 import com.oldhu.suunto2nike.nike.NikePlus;
 import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
+import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class MovesLinkFactory
 {
@@ -52,7 +53,7 @@ public class MovesLinkFactory
 
 	public void uploadXMLFiles() throws Exception
 	{
-		File folder = MovesLinkFactory.getInstance().getDataFolder();
+		File folder = getDataFolder();
 		File noMovesFolder = new File(folder, "NoMoves");
 		File duplicateMovesFolder = new File(folder, "Duplicates");
 		File pendingMovesFolder = new File(folder, "Pending");
