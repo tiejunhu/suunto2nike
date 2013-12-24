@@ -22,6 +22,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import com.oldhu.suunto2nike.excel.SuuntoExcelParser;
+import com.oldhu.suunto2nike.moveslink.SuuntoMove;
+import com.oldhu.suunto2nike.moveslink.SuuntoXMLParser;
 import com.oldhu.suunto2nike.nike.NikePlus;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
 
