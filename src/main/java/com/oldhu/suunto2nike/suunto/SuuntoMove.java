@@ -1,13 +1,17 @@
 package com.oldhu.suunto2nike.suunto;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SuuntoMove
 {
-	private String startTime;
-	private int duration;
-	private int calories;
-	private int distance;
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private String startTime;							// Format 2013-12-17 21:25:52
+	private int duration;								// in milli-seconds
+	private int calories;								// KCal
+	private int distance;								// in meters
 	private ArrayList<String> distanceSamples;
 
 	public ArrayList<String> getDistanceSamples()
@@ -46,6 +50,11 @@ public class SuuntoMove
 	public void setStartTime(String startTime)
 	{
 		this.startTime = startTime;
+	}
+	
+	public void setStartTime(Date startTime)
+	{
+		this.startTime = dateFormat.format(startTime);
 	}
 
 	public int getDuration()
