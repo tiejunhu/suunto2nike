@@ -4,23 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.oldhu.suunto2nike.nike.NikePlus;
 import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
-import com.oldhu.suunto2nike.suunto.moveslink.MovesLinkFactory;
 
 public class MovesLink2Factory
 {
@@ -77,6 +70,13 @@ public class MovesLink2Factory
 	public void uploadXMLFiles() throws Exception
 	{
 		File folder = getDataFolder();
+
+		File notRunFolder = new File(folder, "NotRun");
+		File uploadedMovesFolder = new File(folder, "Uploaded");
+		
+		notRunFolder.mkdir();
+		uploadedMovesFolder.mkdir();
+		
 		File[] files = folder.listFiles();
 		for (File file : files) {
 			String fileName = file.getName();
@@ -85,7 +85,10 @@ public class MovesLink2Factory
 				XMLParser parser = new XMLParser(file);
 				if (parser.isParseCompleted()) {
 					uploadMoveToNike(parser.getSuuntoMove());
-				}		
+					file.renameTo(new File(uploadedMovesFolder, file.getName()));
+				} else {
+					file.renameTo(new File(notRunFolder, file.getName()));
+				}
 			}
 		}
 	}

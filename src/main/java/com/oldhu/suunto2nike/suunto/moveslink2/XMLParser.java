@@ -166,7 +166,7 @@ public class XMLParser
 		
 		double t = 0;
 		while (t < suuntoMove.getDuration()) {
-			t += 10;
+			t += 10 * 1000;
 			int hr = (int) interpolate(timeToHR, t);
 			int distance = (int) interpolate(timeToDistance, t);
 			suuntoMove.addHeartRateSample(Integer.toString(hr));
@@ -205,9 +205,9 @@ public class XMLParser
 	{
 		double start = 0;
 		for (int i = 0; i < hrList.size(); ++i) {
-			double time = timeArray[i] - start;
-			start = timeArray[i];
-			hrArray[i] = hrList.get(i).doubleValue() * 60 / time;
+//			double time = timeArray[i] - start;
+//			start = timeArray[i];
+			hrArray[i] = hrList.get(i).doubleValue() * 60;
 		}
 	}
 
