@@ -17,15 +17,15 @@ import org.w3c.dom.NodeList;
 
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
-public class SuuntoXMLParser
+public class XMLParser
 {
-	private static Log log = LogFactory.getLog(SuuntoXMLParser.class);
+	private static Log log = LogFactory.getLog(XMLParser.class);
 	private final Pattern durationPattern = Pattern.compile("(\\d+):(\\d+):(\\d+)\\.?(\\d*)");
 
 	private Element moves;
 	private File xmlFile;
 
-	public SuuntoXMLParser(File xmlFile) throws Exception
+	public XMLParser(File xmlFile) throws Exception
 	{
 		log.debug("Parsing " + xmlFile.getName());
 		this.xmlFile = xmlFile;

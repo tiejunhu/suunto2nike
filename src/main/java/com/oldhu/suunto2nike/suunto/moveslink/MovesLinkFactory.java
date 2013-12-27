@@ -69,7 +69,7 @@ public class MovesLinkFactory
 			String fileName = file.getName();
 			if (fileName.startsWith("Quest_")) {
 				log.info("Analyzing " + fileName);
-				SuuntoMove[] moves = new SuuntoXMLParser(file).parse();
+				SuuntoMove[] moves = new XMLParser(file).parse();
 				if (moves == null) {
 					log.info("There's no moves in " + file.getName());
 					file.renameTo(new File(noMovesFolder, file.getName()));
@@ -90,7 +90,7 @@ public class MovesLinkFactory
 		ArrayList<Document> docs = new ArrayList<Document>();
 
 		for (File file : pendingMovesFolder.listFiles()) {
-			SuuntoMove[] moves = new SuuntoXMLParser(file).parse();
+			SuuntoMove[] moves = new XMLParser(file).parse();
 			for (int i = 0; i < moves.length; ++i) {
 				SuuntoMove move = moves[i];
 				NikePlusXmlGenerator nikeXml = new NikePlusXmlGenerator(move);
@@ -121,10 +121,10 @@ public class MovesLinkFactory
 
 	private boolean isDuplicated(File newFile, File pendingMovesFolder, File uploadedMovesFolder) throws Exception
 	{
-		SuuntoMove[] newMoves = new SuuntoXMLParser(newFile).parse();
+		SuuntoMove[] newMoves = new XMLParser(newFile).parse();
 		File[] files = (File[]) ArrayUtils.addAll(pendingMovesFolder.listFiles(), uploadedMovesFolder.listFiles());
 		for (File file : files) {
-			SuuntoMove[] moves = new SuuntoXMLParser(file).parse();
+			SuuntoMove[] moves = new XMLParser(file).parse();
 			if (newMoves.length != moves.length) {
 				continue;
 			}
