@@ -1,5 +1,6 @@
 package com.oldhu.suunto2nike;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.xml.transform.OutputKeys;
@@ -22,19 +23,15 @@ public class App
 	public static void main(String[] args) throws Exception
 	{
 		if (args.length == 1) {
+			if (args[0].equals("1")) {
+				uploadMovesLink();			
+			}
 			if (args[0].equals("2")) {
-				MovesLink2Factory ml2f = MovesLink2Factory.getInstance();
-				if (!ml2f.checkIfEnvOkay()) {
-					return;
-				}
-				ml2f.uploadXMLFiles();			
+				uploadMovesLink2();			
 			}
 		} else {
-			MovesLinkFactory mlf = MovesLinkFactory.getInstance();
-			if (!mlf.checkIfEnvOkay()) {
-				return;
-			}
-			mlf.uploadXMLFiles();			
+			uploadMovesLink();			
+			uploadMovesLink2();			
 		}
 
 		// if (args.length == 1) {
@@ -44,6 +41,28 @@ public class App
 		// return;
 		// }
 
+	}
+
+	private static void uploadMovesLink() throws IOException, Exception
+	{
+		log.info("Uploading MovesLink ...");
+		MovesLinkFactory mlf = MovesLinkFactory.getInstance();
+		if (!mlf.checkIfEnvOkay()) {
+			return;
+		}
+		mlf.uploadXMLFiles();
+		log.info("Upload MovesLink done.");
+	}
+
+	private static void uploadMovesLink2() throws IOException, Exception
+	{
+		log.info("Uploading MovesLink2 ...");
+		MovesLink2Factory ml2f = MovesLink2Factory.getInstance();
+		if (!ml2f.checkIfEnvOkay()) {
+			return;
+		}
+		ml2f.uploadXMLFiles();
+		log.info("Upload MovesLink2 done.");
 	}
 
 	// private static void uploadExcelFile(String fileName) throws Exception
