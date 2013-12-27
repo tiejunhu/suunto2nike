@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.oldhu.suunto2nike.suunto.moveslink.MovesLinkFactory;
-import com.oldhu.suunto2nike.suunto.moveslink2.MovesLink2Factory;
+import com.oldhu.suunto2nike.suunto.moveslink.MovesLinkUploader;
+import com.oldhu.suunto2nike.suunto.moveslink2.MovesLink2Uploader;
 
 public class App
 {
@@ -30,7 +30,7 @@ public class App
 	private static void uploadMovesLink() throws IOException, Exception
 	{
 		log.info("Uploading MovesLink ...");
-		MovesLinkFactory mlf = MovesLinkFactory.getInstance();
+		MovesLinkUploader mlf = MovesLinkUploader.getInstance();
 		if (!mlf.checkIfEnvOkay()) {
 			return;
 		}
@@ -41,7 +41,7 @@ public class App
 	private static void uploadMovesLink2() throws IOException, Exception
 	{
 		log.info("Uploading MovesLink2 ...");
-		MovesLink2Factory ml2f = MovesLink2Factory.getInstance();
+		MovesLink2Uploader ml2f = MovesLink2Uploader.getInstance();
 		if (!ml2f.checkIfEnvOkay()) {
 			return;
 		}

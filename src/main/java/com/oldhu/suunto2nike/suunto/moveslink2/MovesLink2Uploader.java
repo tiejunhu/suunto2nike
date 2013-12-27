@@ -15,17 +15,18 @@ import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
-public class MovesLink2Factory
+public class MovesLink2Uploader
 {
-	private static MovesLink2Factory _factory = new MovesLink2Factory();
-	private static Log log = LogFactory.getLog("MovesLink2Factory");
+	private static MovesLink2Uploader _instance = new MovesLink2Uploader();
+	private static Log log = LogFactory.getLog(MovesLink2Uploader.class);
+	private NikePlusProperties nikePlusProperties;
 
-	public static MovesLink2Factory getInstance()
+	public static MovesLink2Uploader getInstance()
 	{
-		return _factory;
+		return _instance;
 	}
 
-	private MovesLink2Factory()
+	private MovesLink2Uploader()
 	{
 
 	}
@@ -37,18 +38,6 @@ public class MovesLink2Factory
 		return folder;
 	}
 	
-	private File getNikeUserPropertiesFile()
-	{
-		return new File(getDataFolder(), "nikeuser.properties");
-	}
-	
-	private Properties getNikePlusUserProperties() throws FileNotFoundException, IOException
-	{
-		Properties prop = new Properties();
-		prop.load(new FileInputStream(getNikeUserPropertiesFile()));
-		return prop;
-	}
-
 	public boolean checkIfEnvOkay() throws IOException
 	{
 		File folder = getDataFolder();
@@ -60,10 +49,8 @@ public class MovesLink2Factory
 			log.error("Cannot write to moveslink2 data folder");
 		}
 
-		File nikeplusUser = getNikeUserPropertiesFile();
-		if (!nikeplusUser.exists()) {
-			NikePlusProperties.getInstance().createNikePlusUserProperties(nikeplusUser);
-		}
+		nikePlusProperties = new NikePlusProperties(getDataFolder());
+
 		return true;
 	}
 	
@@ -97,9 +84,8 @@ public class MovesLink2Factory
 	{
 		NikePlusXmlGenerator nikeXml = new NikePlusXmlGenerator(suuntoMove);
 		Document doc = nikeXml.getXML();
-		Properties nikePlusUserProperties = getNikePlusUserProperties();
-		String nikeEmail = nikePlusUserProperties.getProperty(NikePlusProperties.NIKEPLUS_EMAIL);
-		char[] nikePassword = nikePlusUserProperties.getProperty(NikePlusProperties.NIKEPLUS_PASSWORD).toCharArray();
+		String nikeEmail = nikePlusProperties.getEmail();
+		char[] nikePassword = nikePlusProperties.getPassword().toCharArray();
 		NikePlus u = new NikePlus();
 		u.fullSync(nikeEmail, nikePassword, new Document[] { doc } , null);
 	}

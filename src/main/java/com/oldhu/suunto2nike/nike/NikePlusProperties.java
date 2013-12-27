@@ -2,6 +2,7 @@ package com.oldhu.suunto2nike.nike;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,22 +13,50 @@ import org.apache.commons.logging.LogFactory;
 
 public class NikePlusProperties
 {
-	private static NikePlusProperties _instance = new NikePlusProperties();
-	private static Log log = LogFactory.getLog("NikePlusProperties");
+	private static Log log = LogFactory.getLog(NikePlusProperties.class);
+
 	public static final String NIKEPLUS_PASSWORD = "NIKEPLUS_PASSWORD";
 	public static final String NIKEPLUS_EMAIL = "NIKEPLUS_EMAIL";
 
-	public static NikePlusProperties getInstance()
+	private File dataFolder;
+
+	private Properties nikeProperties;
+
+	public NikePlusProperties(File folder) throws IOException
 	{
-		return _instance;
+		log.info("Checking Nike Plus properties file under " + folder.getAbsolutePath());
+		dataFolder = folder;
+		File nikeplusUser = getNikeUserPropertiesFile();
+		if (!nikeplusUser.exists()) {
+			createNikePlusUserProperties(nikeplusUser);
+		}
+		nikeProperties = getNikePlusUserProperties();
 	}
 
-	private NikePlusProperties()
+	public String getEmail()
 	{
+		return nikeProperties.getProperty(NIKEPLUS_EMAIL);
+	}
+
+	public String getPassword()
+	{
+		return nikeProperties.getProperty(NIKEPLUS_PASSWORD);
 
 	}
-	
-	public void createNikePlusUserProperties(File file) throws IOException
+
+	private File getNikeUserPropertiesFile()
+	{
+		return new File(dataFolder, "nikeuser.properties");
+	}
+
+	private Properties getNikePlusUserProperties() throws IOException
+	{
+		Properties prop = new Properties();
+		prop.load(new FileInputStream(getNikeUserPropertiesFile()));
+		return prop;
+	}
+
+	private void createNikePlusUserProperties(File file) throws IOException
 	{
 		String userName;
 		String password;

@@ -1,11 +1,8 @@
 package com.oldhu.suunto2nike.suunto.moveslink;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -17,17 +14,18 @@ import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
-public class MovesLinkFactory
+public class MovesLinkUploader
 {
-	private static MovesLinkFactory _factory = new MovesLinkFactory();
-	private static Log log = LogFactory.getLog("MovesLinkFactory");
+	private static MovesLinkUploader _instance = new MovesLinkUploader();
+	private static Log log = LogFactory.getLog(MovesLinkUploader.class);
+	private NikePlusProperties nikePlusProperties;
 
-	public static MovesLinkFactory getInstance()
+	public static MovesLinkUploader getInstance()
 	{
-		return _factory;
+		return _instance;
 	}
 
-	private MovesLinkFactory()
+	private MovesLinkUploader()
 	{
 
 	}
@@ -37,18 +35,6 @@ public class MovesLinkFactory
 		String userHome = System.getProperty("user.home");
 		File folder = new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink");
 		return folder;
-	}
-
-	private Properties getNikePlusUserProperties() throws FileNotFoundException, IOException
-	{
-		Properties prop = new Properties();
-		prop.load(new FileInputStream(getNikeUserPropertiesFile()));
-		return prop;
-	}
-
-	private File getNikeUserPropertiesFile()
-	{
-		return new File(getDataFolder(), "nikeuser.properties");
 	}
 
 	public void uploadXMLFiles() throws Exception
@@ -108,10 +94,8 @@ public class MovesLinkFactory
 		Document[] docsArray = new Document[docs.size()];
 		docs.toArray(docsArray);
 
-		Properties nikePlusUserProperties = getNikePlusUserProperties();
-
-		String nikeEmail = nikePlusUserProperties.getProperty(NikePlusProperties.NIKEPLUS_EMAIL);
-		char[] nikePassword = nikePlusUserProperties.getProperty(NikePlusProperties.NIKEPLUS_PASSWORD).toCharArray();
+		String nikeEmail = nikePlusProperties.getEmail();
+		char[] nikePassword = nikePlusProperties.getPassword().toCharArray();
 		NikePlus u = new NikePlus();
 		u.fullSync(nikeEmail, nikePassword, docsArray, null);
 		for (File file : pendingMovesFolder.listFiles()) {
@@ -153,11 +137,9 @@ public class MovesLinkFactory
 		if (!folder.canWrite()) {
 			log.error("Cannot write to moves link data folder");
 		}
+		
+		nikePlusProperties = new NikePlusProperties(getDataFolder());
 
-		File nikeplusUser = getNikeUserPropertiesFile();
-		if (!nikeplusUser.exists()) {
-			NikePlusProperties.getInstance().createNikePlusUserProperties(nikeplusUser);
-		}
 		return true;
 	}
 
