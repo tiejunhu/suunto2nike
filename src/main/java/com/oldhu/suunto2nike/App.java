@@ -33,14 +33,6 @@ public class App
 			uploadMovesLink();			
 			uploadMovesLink2();			
 		}
-
-		// if (args.length == 1) {
-		// String excelFile = args[0];
-		// log.info("Uploading excel file " + excelFile);
-		// uploadExcelFile(excelFile);
-		// return;
-		// }
-
 	}
 
 	private static void uploadMovesLink() throws IOException, Exception
@@ -64,25 +56,6 @@ public class App
 		ml2f.uploadXMLFiles();
 		log.info("Upload MovesLink2 done.");
 	}
-
-	// private static void uploadExcelFile(String fileName) throws Exception
-	// {
-	// SuuntoExcelParser parser = new SuuntoExcelParser();
-	// SuuntoMove move = parser.parse(fileName);
-	// NikePlusXmlGenerator nikeXml = new NikePlusXmlGenerator(move);
-	// Document doc = nikeXml.getXML();
-	//
-	// System.out.println(formatXML(doc));
-	//
-	// Properties nikePlusUserProperties = getNikePlusUserProperties();
-	//
-	// String nikeEmail = nikePlusUserProperties.getProperty(NIKEPLUS_EMAIL);
-	// char[] nikePassword =
-	// nikePlusUserProperties.getProperty(NIKEPLUS_PASSWORD).toCharArray();
-	// NikePlus u = new NikePlus();
-	// u.fullSync(nikeEmail, nikePassword, new Document[] { doc }, null);
-	//
-	// }
 
 	private static String formatXML(Document doc) throws Exception
 	{
