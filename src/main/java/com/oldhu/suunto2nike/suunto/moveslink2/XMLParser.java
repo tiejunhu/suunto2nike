@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.oldhu.suunto2nike.Util;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class XMLParser
@@ -30,12 +31,14 @@ public class XMLParser
 	private SuuntoMove suuntoMove = new SuuntoMove();
 	private boolean hasGPS = false;
 	private boolean parseCompleted = false;
-	
-	public boolean isParseCompleted() {
+
+	public boolean isParseCompleted()
+	{
 		return parseCompleted;
 	}
-	
-	public SuuntoMove getSuuntoMove() {
+
+	public SuuntoMove getSuuntoMove()
+	{
 		return suuntoMove;
 	}
 
@@ -61,35 +64,31 @@ public class XMLParser
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		return dBuilder.parse(stream);
-
 	}
 
 	private boolean pareseHeader(Element header) throws ParseException
 	{
-		int moveType = Integer.parseInt(getChildElementValue(header, "ActivityType"));
+		int moveType = Integer.parseInt(Util.getChildElementValue(header, "ActivityType"));
 		if (moveType != 3 && moveType != 93) {
 			log.info("    not a running move");
 			return false;
 		}
-		int distance = Integer.parseInt(getChildElementValue(header, "Distance"));
+		int distance = Integer.parseInt(Util.getChildElementValue(header, "Distance"));
 		if (distance == 0) {
 			log.info("    distance zero");
 			return false;
 		}
-		
+
 		suuntoMove.setDistance(distance);
-		suuntoMove.setDuration((int) (doubleFromString(getChildElementValue(header, "Duration")).doubleValue() * 1000));
-		suuntoMove.setCalories(caloriesFromKilojoules(doubleFromString(getChildElementValue(header, "Energy"))));
-		
-		String dateTime = getChildElementValue(header, "DateTime");
+		suuntoMove.setDuration((int) (Util.doubleFromString(Util.getChildElementValue(header, "Duration"))
+				.doubleValue() * 1000));
+		suuntoMove.setCalories(Util.kiloCaloriesFromKilojoules(Util.doubleFromString(Util.getChildElementValue(header,
+				"Energy"))));
+
+		String dateTime = Util.getChildElementValue(header, "DateTime");
 		suuntoMove.setStartTime(dateFormat.parse(dateTime));
-		
+
 		return true;
-	}
-	
-	private int caloriesFromKilojoules(double kj)
-	{
-		return (int) (kj / 4186);
 	}
 
 	public XMLParser(File xmlFile) throws Exception
@@ -101,27 +100,26 @@ public class XMLParser
 			Element samples = (Element) doc.getElementsByTagName("Samples").item(0);
 			checkGPSInfo(samples);
 			if (!hasGPSInfo()) {
-				parseSamples(samples);							
+				parseSamples(samples);
 			} else {
 				log.info("    has GPS info, skip");
 			}
 		}
 	}
-	
+
 	private boolean parseSamples(Element samples) throws ArgumentOutsideDomainException
 	{
 		NodeList sampleList = samples.getElementsByTagName("Sample");
-		
+
 		boolean isSampleStarted = false;
 		ArrayList<Double> timeList = new ArrayList<Double>();
 		ArrayList<Double> hrList = new ArrayList<Double>();
 		ArrayList<Double> distanceList = new ArrayList<Double>();
-		
-		
+
 		for (int i = 0; i < sampleList.getLength(); ++i) {
 			Element sample = (Element) sampleList.item(i);
 			if (!isSampleStarted) {
-				String cadenceSource = getChildElementValue(sample, "Events", "Cadence", "Source");
+				String cadenceSource = Util.getChildElementValue(sample, "Events", "Cadence", "Source");
 				if (cadenceSource != null) {
 					if (cadenceSource.equalsIgnoreCase("FootPod")) {
 						log.info("    Cadence source is FootPod");
@@ -129,7 +127,7 @@ public class XMLParser
 					}
 					return false;
 				}
-				String distanceSource = getChildElementValue(sample, "Events", "Distance", "Source");
+				String distanceSource = Util.getChildElementValue(sample, "Events", "Distance", "Source");
 				if (distanceSource != null) {
 					if (distanceSource.equalsIgnoreCase("FootPod")) {
 						log.info("    Distance source is FootPod");
@@ -138,32 +136,32 @@ public class XMLParser
 					}
 					return false;
 				}
-				continue;	
+				continue;
 			}
-			
+
 			// Now start with the samples
-			
+
 			// Event sample, skip it
 			if (sample.getElementsByTagName("Events").getLength() != 0) {
 				continue;
 			}
-			
-			timeList.add(doubleFromString(getChildElementValue(sample, "Time")));
-			hrList.add(doubleFromString(getChildElementValue(sample, "HR")));
-			distanceList.add(doubleFromString(getChildElementValue(sample, "Distance")));
+
+			timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")));
+			hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
+			distanceList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Distance")));
 		}
 
 		double[] timeArray = new double[timeList.size()];
 		double[] hrArray = new double[hrList.size()];
 		double[] distanceArray = new double[distanceList.size()];
-		
+
 		populateTimeArray(timeArray, timeList);
 		populateHRArray(hrArray, hrList, timeArray);
 		populateDistanceArray(distanceArray, distanceList);
-	
+
 		PolynomialSplineFunction timeToHR = generateTimeToHRSplineFunction(timeArray, hrArray);
 		PolynomialSplineFunction timeToDistance = generateTimeToDistanceSplineFunction(timeArray, distanceArray);
-		
+
 		double t = 0;
 		while (t < suuntoMove.getDuration()) {
 			t += 10 * 1000;
@@ -172,22 +170,22 @@ public class XMLParser
 			suuntoMove.addHeartRateSample(Integer.toString(hr));
 			suuntoMove.addDistanceSample(Integer.toString(distance));
 		}
-		
+
 		parseCompleted = true;
-		
+
 		return true;
 	}
-	
-	private double interpolate(PolynomialSplineFunction spline, double x) throws ArgumentOutsideDomainException {
+
+	private double interpolate(PolynomialSplineFunction spline, double x) throws ArgumentOutsideDomainException
+	{
 		try {
 			return spline.value(x);
-		}
-		catch (ArgumentOutsideDomainException aode) {
+		} catch (ArgumentOutsideDomainException aode) {
 			double[] knots = spline.getKnots();
-			return spline.value(knots[(x < knots[0]) ? 0 : spline.getN() -1]);
+			return spline.value(knots[(x < knots[0]) ? 0 : spline.getN() - 1]);
 		}
 	}
-	
+
 	private PolynomialSplineFunction generateTimeToDistanceSplineFunction(double[] timeArray, double[] distanceArray)
 	{
 		SplineInterpolator interpolator = new SplineInterpolator();
@@ -198,15 +196,13 @@ public class XMLParser
 	{
 		for (int i = 0; i < distanceList.size(); ++i) {
 			distanceArray[i] = distanceList.get(i).doubleValue();
-		}		
+		}
 	}
 
+	// TODO: assume HR = sample data * 60, need more info on other intervals
 	private void populateHRArray(double[] hrArray, ArrayList<Double> hrList, double[] timeArray)
 	{
-		double start = 0;
 		for (int i = 0; i < hrList.size(); ++i) {
-//			double time = timeArray[i] - start;
-//			start = timeArray[i];
 			hrArray[i] = hrList.get(i).doubleValue() * 60;
 		}
 	}
@@ -229,7 +225,7 @@ public class XMLParser
 		NodeList sampleList = samples.getElementsByTagName("Sample");
 		for (int i = 0; i < sampleList.getLength(); ++i) {
 			Element sample = (Element) sampleList.item(i);
-			String sampleType = getChildElementValue(sample, "SampleType");
+			String sampleType = Util.getChildElementValue(sample, "SampleType");
 			if (sampleType != null) {
 				if (sampleType.toLowerCase().contains("gps")) {
 					hasGPS = true;
@@ -244,27 +240,5 @@ public class XMLParser
 	{
 		return hasGPS;
 	}
-	
-	private Double doubleFromString(String str)
-	{
-		if (str == null) {
-			return Double.valueOf(0);
-		}
-		return Double.valueOf(str);
-	}
-	
-	private String getChildElementValue(Element parent, String... elementNames)
-	{
-		for (int i = 0; i < elementNames.length; ++i) {
-			String elementName = elementNames[i];
-			NodeList nodeList = parent.getElementsByTagName(elementName);
-			if (nodeList.getLength() != 1) return null;
-			Element child = (Element) nodeList.item(0);
-			if (i == elementNames.length - 1) {
-				return child.getTextContent();				
-			}
-			parent = child;
-		}
-		return null;
-	}
+
 }
