@@ -21,8 +21,7 @@ public class SuuntoSheetHandler extends DefaultHandler
 		return suuntoMove;
 	}
 
-	public SuuntoSheetHandler()
-	{
+	public SuuntoSheetHandler() {
 		suuntoMove = new SuuntoMove();
 	}
 
@@ -37,19 +36,15 @@ public class SuuntoSheetHandler extends DefaultHandler
 	public void endElement(String uri, String localName, String name) throws SAXException
 	{
 		if (localName.equals("v")) {
-			switch (currentCell) {
-				case "B3":
-					suuntoMove.setStartTime(lastContents);
-					break;
-				case "C3":
-					suuntoMove.setDuration((int) (Float.parseFloat(lastContents) * 1000));
-					break;
-				case "D3":
-					suuntoMove.setCalories(Integer.parseInt(lastContents));
-					break;
-				case "E3":
-					suuntoMove.setDistance(Integer.parseInt(lastContents));
-					break;
+
+			if (currentCell.equals("B3")) {
+				suuntoMove.setStartTime(lastContents);
+			} else if (currentCell.equals("C3")) {
+				suuntoMove.setDuration((int) (Float.parseFloat(lastContents) * 1000));
+			} else if (currentCell.equals("D3")) {
+				suuntoMove.setCalories(Integer.parseInt(lastContents));
+			} else if (currentCell.equals("E3")) {
+				suuntoMove.setDistance(Integer.parseInt(lastContents));
 			}
 
 			if (lastContents.equals("Distance")) {
