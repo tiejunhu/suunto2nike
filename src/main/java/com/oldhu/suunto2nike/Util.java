@@ -53,5 +53,16 @@ public class Util
 		}
 		return Double.valueOf(str);
 	}
+	
+	public static boolean isWindows()
+	{
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("win") >= 0);		
+	}
 
+	public static boolean isMac()
+	{
+		String OS = System.getProperty("os.name").toLowerCase();
+		return (OS.indexOf("mac") >= 0);		
+	}
 }

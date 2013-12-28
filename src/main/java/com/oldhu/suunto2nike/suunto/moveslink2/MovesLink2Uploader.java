@@ -1,15 +1,13 @@
 package com.oldhu.suunto2nike.suunto.moveslink2;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import com.oldhu.suunto2nike.Util;
 import com.oldhu.suunto2nike.nike.NikePlus;
 import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
@@ -34,8 +32,13 @@ public class MovesLink2Uploader
 	private File getDataFolder()
 	{
 		String userHome = System.getProperty("user.home");
-		File folder = new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink2");
-		return folder;
+		if (Util.isWindows()) {
+			return new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink2");
+		}
+		if (Util.isMac()) {
+			return new File(new File(userHome), "Library/Application Support/Suunto/Moveslink2");			
+		}
+		return null;
 	}
 	
 	public boolean checkIfEnvOkay() throws IOException
