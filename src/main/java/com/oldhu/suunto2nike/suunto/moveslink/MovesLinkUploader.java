@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import com.oldhu.suunto2nike.Util;
 import com.oldhu.suunto2nike.nike.NikePlus;
 import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
@@ -33,8 +34,13 @@ public class MovesLinkUploader
 	private File getDataFolder()
 	{
 		String userHome = System.getProperty("user.home");
-		File folder = new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink");
-		return folder;
+		if (Util.isWindows()) {
+			return new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink");
+		}
+		if (Util.isMac()) {
+			return new File(new File(userHome), "Library/Application Support/Suunto/Moveslink");			
+		}
+		return null;
 	}
 
 	public void uploadXMLFiles() throws Exception
