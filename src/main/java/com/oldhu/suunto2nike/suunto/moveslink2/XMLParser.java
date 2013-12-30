@@ -98,12 +98,12 @@ public class XMLParser
 		Element header = (Element) doc.getElementsByTagName("header").item(0);
 		if (pareseHeader(header)) {
 			Element samples = (Element) doc.getElementsByTagName("Samples").item(0);
-			checkGPSInfo(samples);
-			if (!hasGPSInfo()) {
+//			checkGPSInfo(samples);
+//			if (!hasGPSInfo()) {
 				parseSamples(samples);
-			} else {
-				log.info("    has GPS info, skip");
-			}
+//			} else {
+//				log.info("    has GPS info, skip");
+//			}
 		}
 	}
 
@@ -134,6 +134,11 @@ public class XMLParser
 						isSampleStarted = true;
 						continue;
 					}
+					if (distanceSource.equalsIgnoreCase("gps")) {
+						log.info("    Distance source is GPS");
+						isSampleStarted = true;
+						continue;						
+					}
 					return false;
 				}
 				continue;
@@ -141,10 +146,10 @@ public class XMLParser
 
 			// Now start with the samples
 
-			// Event sample, skip it
-			if (sample.getElementsByTagName("Events").getLength() != 0) {
-				continue;
-			}
+			// skip any none periodic sample
+			String sampleType = Util.getChildElementValue(sample, "SampleType");
+			if (sampleType == null) continue;
+			if (!sampleType.equalsIgnoreCase("periodic")) continue;
 
 			timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")));
 			hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
