@@ -1,4 +1,4 @@
-Suunto to NikePlus Uploader
+Suunto to Nike Plus Uploader
 ===========================
 
 
@@ -10,22 +10,28 @@ This app will convert Suunto's move into Nike Plus' run. Then upload the convert
 How it works
 ------------
 
-It has to be run from the command line, it can upload the "move" you downloaded from Suunto's movescount website as Excel file. It can also upload the XML files under your Moveslink data folder.
-
-To upload an Excel file:
-
-    java -jar suunto2nike-0.0.2-jar-with-dependencies.jar <path to your excel file>
+It has to be run from the command line, then it will scan and upload XML files from MovesLink and MovesLink2 data folder.
 
 To upload Moveslink data:
 
-    java -jar suunto2nike-0.0.2-jar-with-dependencies.jar
+    java -jar suunto2nike-<version>-jar-with-dependencies.jar 1
 
-It will scan automatically all the XML files begin with Quest_, move all dupliate ones into a "Duplicates" folder, move all ones contain no moves into a "NoMoves" folder, move all new moves into a "Pending" folder. Then it login into your Nike Plus account and upload all pending XML files into Nike Plus and move the files into the "Uploaded" folder.
+To upload Moveslink2 data:
+
+    java -jar suunto2nike-<version>-jar-with-dependencies.jar 2
+
+If you run without specify any parameters, it will try Moveslink data folder then Moveslink2 data folder, uploads any XML it can find:
+
+    java -jar suunto2nike-<version>-jar-with-dependencies.jar
+
+When uploading Moveslink data, it will scan automatically all the XML files begin with Quest_, move all dupliate ones into a "Duplicates" folder, move all ones contain no moves into a "NoMoves" folder, move all new moves into a "Pending" folder. Then it login into your Nike Plus account and upload all pending XML files into Nike Plus and move the files into the "Uploaded" folder.
+
+When uploading Moveslinks data, it will scan automatically all the XML files begin with log-, move all the XML files that are not "Running" or "Treadmill" into "NotRun" folder, move all uploaded XMl files into "Uploaded" folder.
 
 How should I use it
 -------------------
 
-Normally you just sync your Quest watch with Moveslink application, then run this app. It will automatically scan all new moves and upload them to your Nike Plus account.
+Normally you just sync your watch with Moveslink/Moveslink2 application, then run this app. It will automatically scan all new moves and upload them to your Nike Plus account.
 
 Where to get it
 ---------------
@@ -35,12 +41,12 @@ Where to get it
 Supported devices
 -----------------
 
-Currently Quest with HR and foot pod only. Because that's what I have.
+Currently tested with Quest and Ambit 2.
 
 Supported OS
 ------------
 
-Currently Windows only
+Windows and Mac
 
 Report Issue/Request Features
 -----------------------------
