@@ -28,8 +28,8 @@ public class XMLParser
 {
 	private static Log log = LogFactory.getLog(XMLParser.class);
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	private static double PositionConstant = 57.2957795131;
 	private SuuntoMove suuntoMove = new SuuntoMove();
-	private boolean hasGPS = false;
 	private boolean parseCompleted = false;
 
 	public boolean isParseCompleted()
@@ -98,12 +98,7 @@ public class XMLParser
 		Element header = (Element) doc.getElementsByTagName("header").item(0);
 		if (pareseHeader(header)) {
 			Element samples = (Element) doc.getElementsByTagName("Samples").item(0);
-//			checkGPSInfo(samples);
-//			if (!hasGPSInfo()) {
-				parseSamples(samples);
-//			} else {
-//				log.info("    has GPS info, skip");
-//			}
+			parseSamples(samples);
 		}
 	}
 
@@ -137,7 +132,7 @@ public class XMLParser
 					if (distanceSource.equalsIgnoreCase("gps")) {
 						log.info("    Distance source is GPS");
 						isSampleStarted = true;
-						continue;						
+						continue;
 					}
 					return false;
 				}
@@ -146,14 +141,25 @@ public class XMLParser
 
 			// Now start with the samples
 
-			// skip any none periodic sample
 			String sampleType = Util.getChildElementValue(sample, "SampleType");
-			if (sampleType == null) continue;
-			if (!sampleType.equalsIgnoreCase("periodic")) continue;
-
-			timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")));
-			hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
-			distanceList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Distance")));
+			
+			if (sampleType == null)
+				continue;
+			
+			if (sampleType.equalsIgnoreCase("periodic")) {
+				timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")));
+				hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
+				distanceList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Distance")));
+				continue;
+			}
+			
+			if (sampleType.toLowerCase().contains("gps")) {
+				double lat = Util.doubleFromString(Util.getChildElementValue(sample, "Latitude")) * PositionConstant;
+				double lon = Util.doubleFromString(Util.getChildElementValue(sample, "Longitude")) * PositionConstant;
+				int ele = Util.doubleFromString(Util.getChildElementValue(sample, "GPSAltitude")).intValue();
+				String utc = Util.getChildElementValue(sample, "UTC");
+				suuntoMove.addTrackPoint(lat, lon, ele, utc);
+			}
 		}
 
 		double[] timeArray = new double[timeList.size()];
@@ -204,7 +210,7 @@ public class XMLParser
 		}
 	}
 
-	// TODO: assume HR = sample data * 60, need more info on other intervals
+	// HR = sample data * 60
 	private void populateHRArray(double[] hrArray, ArrayList<Double> hrList, double[] timeArray)
 	{
 		for (int i = 0; i < hrList.size(); ++i) {
@@ -223,27 +229,6 @@ public class XMLParser
 	{
 		SplineInterpolator interpolator = new SplineInterpolator();
 		return interpolator.interpolate(timeArray, hrArray);
-	}
-
-	private void checkGPSInfo(Element samples)
-	{
-		NodeList sampleList = samples.getElementsByTagName("Sample");
-		for (int i = 0; i < sampleList.getLength(); ++i) {
-			Element sample = (Element) sampleList.item(i);
-			String sampleType = Util.getChildElementValue(sample, "SampleType");
-			if (sampleType != null) {
-				if (sampleType.toLowerCase().contains("gps")) {
-					hasGPS = true;
-					return;
-				}
-			}
-		}
-		hasGPS = false;
-	}
-
-	public boolean hasGPSInfo()
-	{
-		return hasGPS;
 	}
 
 }

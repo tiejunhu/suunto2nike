@@ -10,6 +10,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Util
@@ -36,16 +37,17 @@ public class Util
 		for (int i = 0; i < elementNames.length; ++i) {
 			String elementName = elementNames[i];
 			NodeList nodeList = parent.getElementsByTagName(elementName);
-			if (nodeList.getLength() != 1) return null;
+			if (nodeList.getLength() != 1)
+				return null;
 			Element child = (Element) nodeList.item(0);
 			if (i == elementNames.length - 1) {
-				return child.getTextContent();				
+				return child.getTextContent();
 			}
 			parent = child;
 		}
 		return null;
 	}
-	
+
 	public static Double doubleFromString(String str)
 	{
 		if (str == null) {
@@ -53,16 +55,44 @@ public class Util
 		}
 		return Double.valueOf(str);
 	}
-	
+
 	public static boolean isWindows()
 	{
 		String OS = System.getProperty("os.name").toLowerCase();
-		return (OS.indexOf("win") >= 0);		
+		return (OS.indexOf("win") >= 0);
 	}
 
 	public static boolean isMac()
 	{
 		String OS = System.getProperty("os.name").toLowerCase();
-		return (OS.indexOf("mac") >= 0);		
+		return (OS.indexOf("mac") >= 0);
+	}
+
+	public static Element appendElement(Node parent, String name)
+	{
+		return appendElement(parent, name, null);
+	}
+
+	public static Element appendElement(Node parent, String name, Object data, String... attributes)
+	{
+		Document doc = (parent.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parent : parent.getOwnerDocument();
+		Element e = doc.createElement(name);
+		parent.appendChild(e);
+
+		if (data != null)
+			e.appendChild(doc.createTextNode(data.toString()));
+
+		for (int i = 0; i < attributes.length; ++i)
+			e.setAttribute(attributes[i++], attributes[i]);
+
+		return e;
+	}
+
+	public static void appendCDATASection(Node parent, String name, Object data)
+	{
+		Document doc = (parent.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parent : parent.getOwnerDocument();
+		Element e = doc.createElement(name);
+		parent.appendChild(e);
+		e.appendChild(doc.createCDATASection(data.toString()));
 	}
 }

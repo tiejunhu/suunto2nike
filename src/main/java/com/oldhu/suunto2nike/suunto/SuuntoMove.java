@@ -3,16 +3,18 @@ package com.oldhu.suunto2nike.suunto;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.ListIterator;
 
 public class SuuntoMove
 {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private String startTime;							// Format 2013-12-17 21:25:52
-	private int duration;								// in milli-seconds
-	private int calories;								// KCal
-	private int distance;								// in meters
+
+	private String startTime; // Format 2013-12-17 21:25:52
+	private int duration; // in milli-seconds
+	private int calories; // KCal
+	private int distance; // in meters
 	private ArrayList<String> distanceSamples;
+	private ArrayList<TrackPoint> trackPoints;
 
 	public ArrayList<String> getDistanceSamples()
 	{
@@ -30,6 +32,7 @@ public class SuuntoMove
 	{
 		distanceSamples = new ArrayList<String>();
 		heartRateSamples = new ArrayList<String>();
+		trackPoints = new ArrayList<TrackPoint>();
 	}
 
 	public void addDistanceSample(String distance)
@@ -51,7 +54,7 @@ public class SuuntoMove
 	{
 		this.startTime = startTime;
 	}
-	
+
 	public void setStartTime(Date startTime)
 	{
 		this.startTime = dateFormat.format(startTime);
@@ -87,6 +90,16 @@ public class SuuntoMove
 		this.distance = distance;
 	}
 
+	public void addTrackPoint(double lat, double lon, int ele, String time)
+	{
+		trackPoints.add(new TrackPoint(lat, lon, ele, time));
+	}
+	
+	public Iterable<TrackPoint> getTrackPoints()
+	{
+		return trackPoints;
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -96,5 +109,42 @@ public class SuuntoMove
 			return true;
 		}
 		return false;
+	}
+
+	public class TrackPoint
+	{
+		private double latitude;
+		private double longitude;
+		private int elevation;
+		private String time;
+
+		public String getLatitude()
+		{
+			return Double.toString(latitude);
+		}
+
+		public String getLongitude()
+		{
+			return Double.toString(longitude);
+		}
+
+		public int getElevation()
+		{
+			return elevation;
+		}
+
+		public String getTime()
+		{
+			return time;
+		}
+		
+		public TrackPoint(double lat, double lon, int ele, String time)
+		{
+			this.latitude = lat;
+			this.longitude = lon;
+			this.elevation = ele;
+			this.time = time;
+		}
+
 	}
 }

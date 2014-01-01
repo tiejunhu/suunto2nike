@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 
 import com.oldhu.suunto2nike.Util;
 import com.oldhu.suunto2nike.nike.NikePlus;
+import com.oldhu.suunto2nike.nike.NikePlusGpxGenerator;
 import com.oldhu.suunto2nike.nike.NikePlusProperties;
 import com.oldhu.suunto2nike.nike.NikePlusXmlGenerator;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
@@ -36,11 +37,11 @@ public class MovesLink2Uploader
 			return new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink2");
 		}
 		if (Util.isMac()) {
-			return new File(new File(userHome), "Library/Application Support/Suunto/Moveslink2");			
+			return new File(new File(userHome), "Library/Application Support/Suunto/Moveslink2");
 		}
 		return null;
 	}
-	
+
 	public boolean checkIfEnvOkay() throws IOException
 	{
 		File folder = getDataFolder();
@@ -56,17 +57,17 @@ public class MovesLink2Uploader
 
 		return true;
 	}
-	
+
 	public void uploadXMLFiles() throws Exception
 	{
 		File folder = getDataFolder();
 
 		File notRunFolder = new File(folder, "NotRun");
 		File uploadedMovesFolder = new File(folder, "Uploaded");
-		
+
 		notRunFolder.mkdir();
 		uploadedMovesFolder.mkdir();
-		
+
 		File[] files = folder.listFiles();
 		for (File file : files) {
 			String fileName = file.getName();
@@ -87,9 +88,13 @@ public class MovesLink2Uploader
 	{
 		NikePlusXmlGenerator nikeXml = new NikePlusXmlGenerator(suuntoMove);
 		Document doc = nikeXml.getXML();
+
+		NikePlusGpxGenerator nikeGpx = new NikePlusGpxGenerator(suuntoMove);
+		Document gpx = nikeGpx.getXML();
+
 		String nikeEmail = nikePlusProperties.getEmail();
 		char[] nikePassword = nikePlusProperties.getPassword().toCharArray();
 		NikePlus u = new NikePlus();
-		u.fullSync(nikeEmail, nikePassword, new Document[] { doc } , null);
+		u.fullSync(nikeEmail, nikePassword, new Document[] { doc }, gpx == null ? null : new Document[] { gpx });
 	}
 }

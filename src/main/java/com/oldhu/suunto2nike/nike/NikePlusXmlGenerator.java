@@ -9,8 +9,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+import com.oldhu.suunto2nike.Util;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class NikePlusXmlGenerator
@@ -36,7 +36,7 @@ public class NikePlusXmlGenerator
 	public Document getXML() throws Exception
 	{
 		Document doc = newDocument();
-		Element rootSportsData = appendElement(doc, "sportsData");
+		Element rootSportsData = Util.appendElement(doc, "sportsData");
 
 		appendRunSummary(rootSportsData);
 		appendTemplate(rootSportsData);
@@ -50,10 +50,10 @@ public class NikePlusXmlGenerator
 
 	private void appendRunSummary(Element parent) throws ParseException
 	{
-		Element runSummary = appendElement(parent, "runSummary");
+		Element runSummary = Util.appendElement(parent, "runSummary");
 		appendRunSummaryStartTime(runSummary);
 		appendRunSummaryTotals(runSummary);
-		appendElement(runSummary, "battery");
+		Util.appendElement(runSummary, "battery");
 	}
 
 	private String getNikeFormatStartTime() throws ParseException
@@ -67,41 +67,41 @@ public class NikePlusXmlGenerator
 
 	private void appendRunSummaryStartTime(Element runSummary) throws ParseException
 	{
-		appendElement(runSummary, "time", getNikeFormatStartTime());
+		Util.appendElement(runSummary, "time", getNikeFormatStartTime());
 	}
 
 	private void appendRunSummaryTotals(Element runSummary)
 	{
-		appendElement(runSummary, "duration", move.getDuration());
+		Util.appendElement(runSummary, "duration", move.getDuration());
 		float distance = move.getDistance() / 1000.0f;
-		appendElement(runSummary, "distance", String.format("%.4f", distance), "unit", "km");
-		appendElement(runSummary, "calories", move.getCalories());
+		Util.appendElement(runSummary, "distance", String.format("%.4f", distance), "unit", "km");
+		Util.appendElement(runSummary, "calories", move.getCalories());
 	}
 
 	private void appendTemplate(Element sportsDataElement)
 	{
-		Element templateElement = appendElement(sportsDataElement, "template");
-		appendCDATASection(templateElement, "templateName", "Basic");
+		Element templateElement = Util.appendElement(sportsDataElement, "template");
+		Util.appendCDATASection(templateElement, "templateName", "Basic");
 	}
 
 	private void appendGoalType(Element sportsDataElement)
 	{
-		appendElement(sportsDataElement, "goal", null, "type", "", "value", "", "unit", "");
+		Util.appendElement(sportsDataElement, "goal", null, "type", "", "value", "", "unit", "");
 	}
 
 	private void appendUserInfo(Element sportsDataElement)
 	{
-		Element userInfo = appendElement(sportsDataElement, "userInfo");
-		appendElement(userInfo, "empedID", "XXXXXXXXXXX");
-		appendElement(userInfo, "weight");
+		Element userInfo = Util.appendElement(sportsDataElement, "userInfo");
+		Util.appendElement(userInfo, "empedID", "XXXXXXXXXXX");
+		Util.appendElement(userInfo, "weight");
 
-		appendElement(userInfo, "device", "iPod"); // iPod
-		appendElement(userInfo, "calibration");
+		Util.appendElement(userInfo, "device", "iPod"); // iPod
+		Util.appendElement(userInfo, "calibration");
 	}
 
 	private void appendStartTimeElement(Element sportsDataElement) throws Exception
 	{
-		appendElement(sportsDataElement, "startTime", getNikeFormatStartTime());
+		Util.appendElement(sportsDataElement, "startTime", getNikeFormatStartTime());
 	}
 
 	private void appendExtendedDataList(Element sportsDataElement)
@@ -122,40 +122,13 @@ public class NikePlusXmlGenerator
 			}
 		}
 
-		Element extendedDataListElement = appendElement(sportsDataElement, "extendedDataList");
-		appendElement(extendedDataListElement, "extendedData", sbDistance, "dataType", "distance", "intervalType",
+		Element extendedDataListElement = Util.appendElement(sportsDataElement, "extendedDataList");
+		Util.appendElement(extendedDataListElement, "extendedData", sbDistance, "dataType", "distance", "intervalType",
 				"time", "intervalUnit", "s", "intervalValue", "10");
 //		appendElement(extendedDataListElement, "extendedData", sbSpeed, "dataType", "speed", "intervalType", "time",
 //				"intervalUnit", "s", "intervalValue", "10");
-		appendElement(extendedDataListElement, "extendedData", sbHeartRate, "dataType", "heartRate", "intervalType",
+		Util.appendElement(extendedDataListElement, "extendedData", sbHeartRate, "dataType", "heartRate", "intervalType",
 				"time", "intervalUnit", "s", "intervalValue", "10");
 	}
 
-	private Element appendElement(Node parent, String name)
-	{
-		return appendElement(parent, name, null);
-	}
-
-	private Element appendElement(Node parent, String name, Object data, String... attributes)
-	{
-		Document doc = (parent.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parent : parent.getOwnerDocument();
-		Element e = doc.createElement(name);
-		parent.appendChild(e);
-
-		if (data != null)
-			e.appendChild(doc.createTextNode(data.toString()));
-
-		for (int i = 0; i < attributes.length; ++i)
-			e.setAttribute(attributes[i++], attributes[i]);
-
-		return e;
-	}
-
-	private void appendCDATASection(Node parent, String name, Object data)
-	{
-		Document doc = (parent.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parent : parent.getOwnerDocument();
-		Element e = doc.createElement(name);
-		parent.appendChild(e);
-		e.appendChild(doc.createCDATASection(data.toString()));
-	}
 }
