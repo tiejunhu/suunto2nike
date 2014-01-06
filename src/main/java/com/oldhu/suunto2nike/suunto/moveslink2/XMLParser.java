@@ -106,53 +106,44 @@ public class XMLParser
 	{
 		NodeList sampleList = samples.getElementsByTagName("Sample");
 
-		boolean isSampleStarted = false;
 		ArrayList<Double> timeList = new ArrayList<Double>();
 		ArrayList<Double> hrList = new ArrayList<Double>();
 		ArrayList<Double> distanceList = new ArrayList<Double>();
 
+		double pausedTime = 0.0;
+		double pauseStartTime = 0.0;
+		boolean inPause = false;
+
 		for (int i = 0; i < sampleList.getLength(); ++i) {
 			Element sample = (Element) sampleList.item(i);
-			if (!isSampleStarted) {
-				String cadenceSource = Util.getChildElementValue(sample, "Events", "Cadence", "Source");
-				if (cadenceSource != null) {
-					if (cadenceSource.equalsIgnoreCase("FootPod")) {
-						log.info("    Cadence source is FootPod");
-						continue;
-					}
-					return false;
+
+			String pause = Util.getChildElementValue(sample, "Events", "Pause", "State");
+			if (pause != null) {
+				double time = Util.doubleFromString(Util.getChildElementValue(sample, "Time"));
+				if (pause.equalsIgnoreCase("false")) {
+					pausedTime += time - pauseStartTime;
+					inPause = false;
+				} else if (pause.equalsIgnoreCase("true")) {
+					pauseStartTime = time;
+					inPause = true;
 				}
-				String distanceSource = Util.getChildElementValue(sample, "Events", "Distance", "Source");
-				if (distanceSource != null) {
-					if (distanceSource.equalsIgnoreCase("FootPod")) {
-						log.info("    Distance source is FootPod");
-						isSampleStarted = true;
-						continue;
-					}
-					if (distanceSource.equalsIgnoreCase("gps")) {
-						log.info("    Distance source is GPS");
-						isSampleStarted = true;
-						continue;
-					}
-					return false;
-				}
-				continue;
 			}
 
-			// Now start with the samples
+			if (inPause)
+				continue;
 
 			String sampleType = Util.getChildElementValue(sample, "SampleType");
-			
+
 			if (sampleType == null)
 				continue;
-			
+
 			if (sampleType.equalsIgnoreCase("periodic")) {
-				timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")));
+				timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")) - pausedTime);
 				hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
 				distanceList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Distance")));
 				continue;
 			}
-			
+
 			if (sampleType.toLowerCase().contains("gps")) {
 				double lat = Util.doubleFromString(Util.getChildElementValue(sample, "Latitude")) * PositionConstant;
 				double lon = Util.doubleFromString(Util.getChildElementValue(sample, "Longitude")) * PositionConstant;
