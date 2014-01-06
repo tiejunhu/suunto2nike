@@ -16,28 +16,27 @@ import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class MovesLink2Uploader
 {
-	private static MovesLink2Uploader _instance = new MovesLink2Uploader();
 	private static Log log = LogFactory.getLog(MovesLink2Uploader.class);
 	private NikePlusProperties nikePlusProperties;
+	private boolean devMode = false;
 
-	public static MovesLink2Uploader getInstance()
+	public MovesLink2Uploader(boolean dev)
 	{
-		return _instance;
-	}
-
-	private MovesLink2Uploader()
-	{
-
+		devMode = dev;
 	}
 
 	private File getDataFolder()
 	{
 		String userHome = System.getProperty("user.home");
+		String folderName = "Moveslink2";
+		if (devMode) {
+			folderName = "Moveslink2-dev";
+		}
 		if (Util.isWindows()) {
-			return new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink2");
+			return new File(new File(userHome), "AppData/Roaming/Suunto/" + folderName);
 		}
 		if (Util.isMac()) {
-			return new File(new File(userHome), "Library/Application Support/Suunto/Moveslink2");
+			return new File(new File(userHome), "Library/Application Support/Suunto/" + folderName);
 		}
 		return null;
 	}

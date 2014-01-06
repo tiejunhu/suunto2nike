@@ -19,11 +19,14 @@ public class App
 				uploadMovesLink();			
 			}
 			if (args[0].equals("2")) {
-				uploadMovesLink2();			
+				uploadMovesLink2(false);			
+			}
+			if (args[0].equals("dev")) {
+				uploadMovesLink2(true);
 			}
 		} else {
 			uploadMovesLink();			
-			uploadMovesLink2();			
+			uploadMovesLink2(false);			
 		}
 	}
 
@@ -38,10 +41,10 @@ public class App
 		log.info("Upload MovesLink done.");
 	}
 
-	private static void uploadMovesLink2() throws IOException, Exception
+	private static void uploadMovesLink2(boolean dev) throws IOException, Exception
 	{
 		log.info("Uploading MovesLink2 ...");
-		MovesLink2Uploader ml2f = MovesLink2Uploader.getInstance();
+		MovesLink2Uploader ml2f = new MovesLink2Uploader(dev);
 		if (!ml2f.checkIfEnvOkay()) {
 			return;
 		}
