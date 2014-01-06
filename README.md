@@ -26,7 +26,7 @@ If you run without specify any parameters, it will try Moveslink data folder the
 
 When uploading Moveslink data, it will scan automatically all the XML files begin with Quest_, move all dupliate ones into a "Duplicates" folder, move all ones contain no moves into a "NoMoves" folder, move all new moves into a "Pending" folder. Then it login into your Nike Plus account and upload all pending XML files into Nike Plus and move the files into the "Uploaded" folder.
 
-When uploading Moveslinks2 data, it will scan automatically all the XML files begin with log-, move all the XML files that are not "Running" or "Treadmill" into "NotRun" folder, move all uploaded XMl files into "Uploaded" folder.
+When uploading Moveslinks2 data, it will scan automatically all the XML files begin with log-, move all the XML files that are not "Running" or "Treadmill" into "NotRun" folder, move all uploaded XML files into "Uploaded" folder.
 
 How should I use it
 -------------------
