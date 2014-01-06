@@ -46,7 +46,7 @@ public class MovesLink2Uploader
 	{
 		File folder = getDataFolder();
 		if (!folder.exists()) {
-			log.error("Cannot find moveslink2 data folder");
+			log.info("Cannot find MovesLink2 data folder");
 			return false;
 		}
 		if (!folder.canWrite()) {

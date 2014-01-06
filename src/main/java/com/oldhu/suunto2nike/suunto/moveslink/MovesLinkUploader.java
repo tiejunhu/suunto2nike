@@ -137,7 +137,7 @@ public class MovesLinkUploader
 	{
 		File folder = getDataFolder();
 		if (!folder.exists()) {
-			log.error("Cannot find moves link data folder");
+			log.info("Cannot find MovesLink data folder");
 			return false;
 		}
 		if (!folder.canWrite()) {
