@@ -1,4 +1,12 @@
 @echo off
-c:\dev\jdk1.7.0_40\bin\java -jar suunto2nike-0.0.4-jar-with-dependencies.jar
+
+setlocal enabledelayedexpansion
+
+for /f "tokens=*" %%F in ('dir /b /on "*-with-dependencies.jar"') do set file=%%F
+
+echo Running %file%
+
+java -jar %file%
+
 echo.
 pause
