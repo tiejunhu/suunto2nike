@@ -69,8 +69,8 @@ public class MovesLink2Uploader
 
 		File[] files = folder.listFiles();
 		for (File file : files) {
-			String fileName = file.getName();
-			if (fileName.startsWith("log-")) {
+			String fileName = file.getName().toLowerCase();
+			if (fileName.startsWith("log-") && fileName.endsWith(".xml")) {
 				log.info("Analyzing " + fileName);
 				XMLParser parser = new XMLParser(file);
 				if (parser.isParseCompleted()) {

@@ -58,8 +58,8 @@ public class MovesLinkUploader
 
 		File[] files = folder.listFiles();
 		for (File file : files) {
-			String fileName = file.getName();
-			if (fileName.startsWith("Quest_")) {
+			String fileName = file.getName().toLowerCase();
+			if (fileName.startsWith("quest_") && fileName.endsWith(".xml")) {
 				log.info("Analyzing " + fileName);
 				SuuntoMove[] moves = new XMLParser(file).parse();
 				if (moves == null) {
