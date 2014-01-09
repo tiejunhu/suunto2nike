@@ -112,7 +112,7 @@ public class XMLParser
 
 		double pausedTime = 0.0;
 		double pauseStartTime = 0.0;
-		boolean inPause = false;
+		boolean inPause = true;
 
 		for (int i = 0; i < sampleList.getLength(); ++i) {
 			Element sample = (Element) sampleList.item(i);
@@ -121,8 +121,10 @@ public class XMLParser
 			if (pause != null) {
 				double time = Util.doubleFromString(Util.getChildElementValue(sample, "Time"));
 				if (pause.equalsIgnoreCase("false")) {
-					pausedTime += time - pauseStartTime;
-					inPause = false;
+					if (inPause) {
+						pausedTime += time - pauseStartTime;
+						inPause = false;
+					}
 				} else if (pause.equalsIgnoreCase("true")) {
 					pauseStartTime = time;
 					inPause = true;
