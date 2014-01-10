@@ -242,7 +242,7 @@ public class NikePlus
 		}
 	}
 
-	private boolean syncData(Document runXml, Document gpxXml) throws ClientProtocolException, IOException,
+	public boolean syncData(Document runXml, Document gpxXml) throws ClientProtocolException, IOException,
 			IllegalStateException, SAXException, ParserConfigurationException
 	{
 		CloseableHttpClient client = HttpClientNaiveSsl.getClient();
@@ -271,7 +271,7 @@ public class NikePlus
 		}
 	}
 
-	private Document endSync() throws ClientProtocolException, IOException, IllegalStateException, SAXException,
+	public Document endSync() throws ClientProtocolException, IOException, IllegalStateException, SAXException,
 			ParserConfigurationException
 	{
 		CloseableHttpClient client = HttpClientNaiveSsl.getClient();

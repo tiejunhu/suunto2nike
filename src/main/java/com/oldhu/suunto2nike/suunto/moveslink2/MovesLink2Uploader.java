@@ -66,34 +66,45 @@ public class MovesLink2Uploader
 
 		notRunFolder.mkdir();
 		uploadedMovesFolder.mkdir();
+		
+		NikePlus nikePlus = null;
 
 		File[] files = folder.listFiles();
 		for (File file : files) {
 			String fileName = file.getName().toLowerCase();
 			if (fileName.startsWith("log-") && fileName.endsWith(".xml")) {
+				if (nikePlus == null) {
+					log.info("Login to Nike Plus");
+					nikePlus = new NikePlus();
+					String nikeEmail = nikePlusProperties.getEmail();
+					char[] nikePassword = nikePlusProperties.getPassword().toCharArray();
+					nikePlus.login(nikeEmail, nikePassword);
+				}
 				log.info("Analyzing " + fileName);
 				XMLParser parser = new XMLParser(file);
 				if (parser.isParseCompleted()) {
-					uploadMoveToNike(parser.getSuuntoMove());
+					uploadMoveToNike(nikePlus, parser.getSuuntoMove());
 					file.renameTo(new File(uploadedMovesFolder, file.getName()));
 				} else {
 					file.renameTo(new File(notRunFolder, file.getName()));
 				}
 			}
 		}
+		
+		if (nikePlus != null) {
+			nikePlus.endSync();
+		}
 	}
 
-	private void uploadMoveToNike(SuuntoMove suuntoMove) throws Exception
+	private void uploadMoveToNike(NikePlus nikePlus, SuuntoMove suuntoMove) throws Exception
 	{
+		log.info("Uploading move to Nike Plus");
 		NikePlusXmlGenerator nikeXml = new NikePlusXmlGenerator(suuntoMove);
 		Document doc = nikeXml.getXML();
 
 		NikePlusGpxGenerator nikeGpx = new NikePlusGpxGenerator(suuntoMove);
 		Document gpx = nikeGpx.getXML();
-
-		String nikeEmail = nikePlusProperties.getEmail();
-		char[] nikePassword = nikePlusProperties.getPassword().toCharArray();
-		NikePlus u = new NikePlus();
-		u.fullSync(nikeEmail, nikePassword, new Document[] { doc }, gpx == null ? null : new Document[] { gpx });
+		
+		nikePlus.syncData(doc, gpx);
 	}
 }
