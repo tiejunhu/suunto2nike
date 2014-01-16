@@ -6,7 +6,7 @@ for /f "tokens=*" %%F in ('dir /b /on "*-with-dependencies.jar"') do set file=%%
 
 echo Running %file%
 
-java -jar %file%
+java -jar %file% -debug
 
 echo.
 pause

@@ -44,11 +44,11 @@ public class MovesLink2Uploader
 	{
 		File folder = getDataFolder();
 		if (!folder.exists()) {
-			log.info("Cannot find MovesLink2 data folder");
+			log.info("Cannot find MovesLink2 data folder at " + folder.getAbsolutePath());
 			return false;
 		}
 		if (!folder.canWrite()) {
-			log.error("Cannot write to moveslink2 data folder");
+			log.error("Cannot write to moveslink2 data folder at " + folder.getAbsolutePath());
 		}
 
 		nikePlusProperties = new NikePlusProperties(getDataFolder());

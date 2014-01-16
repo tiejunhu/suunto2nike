@@ -1,6 +1,7 @@
 package com.oldhu.suunto2nike;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import org.apache.log4j.Logger;
 
@@ -9,23 +10,51 @@ import com.oldhu.suunto2nike.suunto.moveslink2.MovesLink2Uploader;
 
 public class App
 {
-	private static Logger log = Logger.getLogger(App.class);
+	private static Logger log = null;
 
 	public static void main(String[] args) throws Exception
 	{
-		if (args.length == 1) {
+		configDebugLogger(args);
+		getLogger();
+		if (log.isDebugEnabled()) {
+			Util.dumpSystemEnv(log);
+		}
+		if (args.length >= 1) {
 			if (args[0].equals("1")) {
-				uploadMovesLink();			
+				uploadMovesLink();
 			}
 			if (args[0].equals("2")) {
-				uploadMovesLink2(false);			
+				uploadMovesLink2(false);
 			}
 			if (args[0].equals("dev")) {
 				uploadMovesLink2(true);
 			}
-		} else {
-			uploadMovesLink();			
-			uploadMovesLink2(false);			
+			if (args[0].equals("-debug")) {
+				uploadMovesLink();
+				uploadMovesLink2(false);
+			}
+			return;
+		}
+
+		uploadMovesLink();
+		uploadMovesLink2(false);
+	}
+	
+	private static Logger getLogger()
+	{
+		if (log == null) {
+			log = Logger.getLogger(App.class);
+		}
+		return log;
+	}
+
+	private static void configDebugLogger(String[] args) throws MalformedURLException
+	{
+		for (String arg : args) {
+			if (arg.equalsIgnoreCase("-debug")) {
+				System.setProperty("log4j.configuration", "log4j-debug.properties");
+				getLogger().info("Debug logger config done.");
+			}
 		}
 	}
 
