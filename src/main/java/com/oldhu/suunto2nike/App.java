@@ -2,15 +2,14 @@ package com.oldhu.suunto2nike;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import com.oldhu.suunto2nike.suunto.moveslink.MovesLinkUploader;
 import com.oldhu.suunto2nike.suunto.moveslink2.MovesLink2Uploader;
 
 public class App
 {
-	private static Log log = LogFactory.getLog("App");
+	private static Logger log = Logger.getLogger(App.class);
 
 	public static void main(String[] args) throws Exception
 	{

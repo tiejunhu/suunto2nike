@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.oldhu.suunto2nike.Util;
@@ -18,7 +17,7 @@ import com.oldhu.suunto2nike.suunto.SuuntoMove;
 public class MovesLinkUploader
 {
 	private static MovesLinkUploader _instance = new MovesLinkUploader();
-	private static Log log = LogFactory.getLog(MovesLinkUploader.class);
+	private static Logger log = Logger.getLogger(MovesLinkUploader.class);
 	private NikePlusProperties nikePlusProperties;
 
 	public static MovesLinkUploader getInstance()

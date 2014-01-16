@@ -12,11 +12,10 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math.ArgumentOutsideDomainException;
 import org.apache.commons.math.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,7 +25,7 @@ import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class XMLParser
 {
-	private static Log log = LogFactory.getLog(XMLParser.class);
+	private static Logger log = Logger.getLogger(XMLParser.class);
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private static double PositionConstant = 57.2957795131;
 	private SuuntoMove suuntoMove = new SuuntoMove();

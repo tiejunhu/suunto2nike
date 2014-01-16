@@ -3,8 +3,7 @@ package com.oldhu.suunto2nike.suunto.moveslink2;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import com.oldhu.suunto2nike.Util;
@@ -16,7 +15,7 @@ import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class MovesLink2Uploader
 {
-	private static Log log = LogFactory.getLog(MovesLink2Uploader.class);
+	private static Logger log = Logger.getLogger(MovesLink2Uploader.class);
 	private NikePlusProperties nikePlusProperties;
 	private boolean devMode = false;
 

@@ -8,12 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 public class NikePlusProperties
 {
-	private static Log log = LogFactory.getLog(NikePlusProperties.class);
+	private static Logger log = Logger.getLogger(NikePlusProperties.class);
 
 	public static final String NIKEPLUS_PASSWORD = "NIKEPLUS_PASSWORD";
 	public static final String NIKEPLUS_EMAIL = "NIKEPLUS_EMAIL";

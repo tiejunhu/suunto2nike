@@ -9,8 +9,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -19,7 +18,7 @@ import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
 public class XMLParser
 {
-	private static Log log = LogFactory.getLog(XMLParser.class);
+	private static Logger log = Logger.getLogger(XMLParser.class);
 	private final Pattern durationPattern = Pattern.compile("(\\d+):(\\d+):(\\d+)\\.?(\\d*)");
 
 	private Element moves;
