@@ -92,13 +92,13 @@ public class XMLParser
 				continue;
 			}
 			currentSum += Integer.parseInt(distance);
-			suuntoMove.addDistanceSample(Integer.toString(currentSum));
+			suuntoMove.addDistanceSample(currentSum);
 		}
 		for (String heartRate : heartRateStr.split(" ")) {
 			if (heartRate.trim().isEmpty()) {
 				continue;
 			}
-			suuntoMove.addHeartRateSample(heartRate);
+			suuntoMove.addHeartRateSample(Integer.parseInt(heartRate));
 		}
 	}
 

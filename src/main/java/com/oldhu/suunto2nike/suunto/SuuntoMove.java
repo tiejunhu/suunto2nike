@@ -12,34 +12,33 @@ public class SuuntoMove
 	private int duration; // in milli-seconds
 	private int calories; // KCal
 	private int distance; // in meters
-	private ArrayList<String> distanceSamples;
+	private ArrayList<Integer> distanceSamples; // in meters
+	private ArrayList<Integer> heartRateSamples;
 	private ArrayList<TrackPoint> trackPoints;
 
-	public ArrayList<String> getDistanceSamples()
+	public ArrayList<Integer> getDistanceSamples()
 	{
 		return distanceSamples;
 	}
 
-	public ArrayList<String> getHeartRateSamples()
+	public ArrayList<Integer> getHeartRateSamples()
 	{
 		return heartRateSamples;
 	}
 
-	private ArrayList<String> heartRateSamples;
-
 	public SuuntoMove()
 	{
-		distanceSamples = new ArrayList<String>();
-		heartRateSamples = new ArrayList<String>();
+		distanceSamples = new ArrayList<Integer>();
+		heartRateSamples = new ArrayList<Integer>();
 		trackPoints = new ArrayList<TrackPoint>();
 	}
 
-	public void addDistanceSample(String distance)
+	public void addDistanceSample(Integer distance)
 	{
 		distanceSamples.add(distance);
 	}
 
-	public void addHeartRateSample(String heartRate)
+	public void addHeartRateSample(Integer heartRate)
 	{
 		heartRateSamples.add(heartRate);
 	}
@@ -93,7 +92,7 @@ public class SuuntoMove
 	{
 		trackPoints.add(new TrackPoint(lat, lon, ele, time));
 	}
-	
+
 	public Iterable<TrackPoint> getTrackPoints()
 	{
 		return trackPoints;
@@ -136,7 +135,7 @@ public class SuuntoMove
 		{
 			return time;
 		}
-		
+
 		public TrackPoint(double lat, double lon, int ele, String time)
 		{
 			this.latitude = lat;

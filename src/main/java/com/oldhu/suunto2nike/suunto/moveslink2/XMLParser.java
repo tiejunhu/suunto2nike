@@ -170,8 +170,8 @@ public class XMLParser
 			t += 10 * 1000;
 			int hr = (int) interpolate(timeToHR, t);
 			int distance = (int) interpolate(timeToDistance, t);
-			suuntoMove.addHeartRateSample(Integer.toString(hr));
-			suuntoMove.addDistanceSample(Integer.toString(distance));
+			suuntoMove.addHeartRateSample(hr);
+			suuntoMove.addDistanceSample(distance);
 		}
 
 		parseCompleted = true;

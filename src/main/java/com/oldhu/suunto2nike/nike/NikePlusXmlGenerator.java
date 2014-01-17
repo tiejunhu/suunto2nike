@@ -3,6 +3,7 @@ package com.oldhu.suunto2nike.nike;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,7 +63,7 @@ public class NikePlusXmlGenerator
 		SimpleDateFormat dfSuunto = new SimpleDateFormat(DATE_TIME_FORMAT_SUUNTO);
 		Date startTime = dfSuunto.parse(move.getStartTime());
 		String startTimeNikeStr = dfNike.format(startTime);
-		return String.format("%s:%s", startTimeNikeStr.substring(0, 22), startTimeNikeStr.substring(22));
+		return String.format(Locale.US, "%s:%s", startTimeNikeStr.substring(0, 22), startTimeNikeStr.substring(22));
 	}
 
 	private void appendRunSummaryStartTime(Element runSummary) throws ParseException
@@ -74,7 +75,7 @@ public class NikePlusXmlGenerator
 	{
 		Util.appendElement(runSummary, "duration", move.getDuration());
 		float distance = move.getDistance() / 1000.0f;
-		Util.appendElement(runSummary, "distance", String.format("%.4f", distance), "unit", "km");
+		Util.appendElement(runSummary, "distance", String.format(Locale.US, "%.4f", distance), "unit", "km");
 		Util.appendElement(runSummary, "calories", move.getCalories());
 	}
 
@@ -111,8 +112,8 @@ public class NikePlusXmlGenerator
 		StringBuilder sbHeartRate = new StringBuilder();
 
 		for (int i = 0; i < move.getDistanceSamples().size(); ++i) {
-			float distance = Float.parseFloat(move.getDistanceSamples().get(i)) / 1000;
-			sbDistance.append(String.format("%.4f", distance));
+			float distance = move.getDistanceSamples().get(i).floatValue() / 1000;
+			sbDistance.append(String.format(Locale.US, "%.4f", distance));
 			sbSpeed.append("0.0000");
 			sbHeartRate.append(move.getHeartRateSamples().get(i));
 			if (i < move.getDistanceSamples().size() - 1) {
