@@ -26,18 +26,15 @@ public class MovesLink2Uploader
 
 	private File getDataFolder()
 	{
-		String userHome = System.getProperty("user.home");
 		String folderName = "Moveslink2";
 		if (devMode) {
 			folderName = "Moveslink2-dev";
 		}
-		if (Util.isWindows()) {
-			return new File(new File(userHome), "AppData/Roaming/Suunto/" + folderName);
+		File suuntoHome = Util.getSuuntoHome();
+		if (suuntoHome == null) {
+			return null;
 		}
-		if (Util.isMac()) {
-			return new File(new File(userHome), "Library/Application Support/Suunto/" + folderName);
-		}
-		return null;
+		return new File(suuntoHome, folderName);
 	}
 
 	public boolean checkIfEnvOkay() throws IOException

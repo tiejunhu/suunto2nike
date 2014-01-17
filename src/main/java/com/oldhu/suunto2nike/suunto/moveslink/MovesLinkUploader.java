@@ -32,14 +32,11 @@ public class MovesLinkUploader
 
 	private File getDataFolder()
 	{
-		String userHome = System.getProperty("user.home");
-		if (Util.isWindows()) {
-			return new File(new File(userHome), "AppData/Roaming/Suunto/Moveslink");
+		File suuntoHome = Util.getSuuntoHome();
+		if (suuntoHome == null) {
+			return null;
 		}
-		if (Util.isMac()) {
-			return new File(new File(userHome), "Library/Application Support/Suunto/Moveslink");			
-		}
-		return null;
+		return new File(suuntoHome, "Moveslink");
 	}
 
 	public void uploadXMLFiles() throws Exception

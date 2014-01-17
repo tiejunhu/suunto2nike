@@ -1,5 +1,6 @@
 package com.oldhu.suunto2nike;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -105,5 +106,19 @@ public class Util
 		for (Entry<Object, Object> entry : prop.entrySet()) {
 			log.debug("System property -- " + entry.getKey() + " : " + entry.getValue());
 		}
+		log.debug("System env -- APPDATA : " + System.getenv("APPDATA"));
+	}
+	
+	public static File getSuuntoHome()
+	{
+		if (Util.isWindows()) {
+			String appData = System.getenv("APPDATA");
+			return new File(new File(appData), "Suunto");
+		}
+		if (Util.isMac()) {
+			String userHome = System.getProperty("user.home");
+			return new File(new File(userHome), "Library/Application Support/Suunto/");
+		}
+		return null;
 	}
 }
