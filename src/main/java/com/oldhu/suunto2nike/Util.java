@@ -33,7 +33,7 @@ public class Util
 
 	public static int kiloCaloriesFromKilojoules(double kj)
 	{
-		return (int) (kj / 4186);
+		return (int) (kj / 4184);
 	}
 
 	public static String getChildElementValue(Element parent, String... elementNames)
