@@ -68,7 +68,7 @@ public class XMLParser
 	private boolean pareseHeader(Element header) throws ParseException
 	{
 		int moveType = Integer.parseInt(Util.getChildElementValue(header, "ActivityType"));
-		if (moveType != 3 && moveType != 93) {
+		if (moveType != 3 && moveType != 93 && moveType != 82) {
 			log.info("    not a running move");
 			return false;
 		}
