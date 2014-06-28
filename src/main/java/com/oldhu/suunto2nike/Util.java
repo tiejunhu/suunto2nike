@@ -1,7 +1,12 @@
 package com.oldhu.suunto2nike;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -108,7 +113,7 @@ public class Util
 		}
 		log.debug("System env -- APPDATA : " + System.getenv("APPDATA"));
 	}
-	
+
 	public static File getSuuntoHome()
 	{
 		if (Util.isWindows()) {
@@ -120,5 +125,29 @@ public class Util
 			return new File(new File(userHome), "Library/Application Support/Suunto/");
 		}
 		return null;
+	}
+
+	public static String isToString(final InputStream is, final int bufferSize)
+	{
+		final char[] buffer = new char[bufferSize];
+		final StringBuilder out = new StringBuilder();
+		try {
+			final Reader in = new InputStreamReader(is, "UTF-8");
+			try {
+				for (;;) {
+					int rsz = in.read(buffer, 0, buffer.length);
+					if (rsz < 0)
+						break;
+					out.append(buffer, 0, rsz);
+				}
+			} finally {
+				in.close();
+			}
+		} catch (UnsupportedEncodingException ex) {
+			return null;
+		} catch (IOException ex) {
+			return null;
+		}
+		return out.toString();
 	}
 }

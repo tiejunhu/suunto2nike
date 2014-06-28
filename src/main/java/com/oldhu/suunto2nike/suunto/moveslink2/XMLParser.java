@@ -139,9 +139,12 @@ public class XMLParser
 				continue;
 
 			if (sampleType.equalsIgnoreCase("periodic")) {
-				timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")) - pausedTime);
-				hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
-				distanceList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Distance")));
+				String distanceStr = Util.getChildElementValue(sample, "Distance");
+				if (distanceStr != null) {
+					timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")) - pausedTime);
+					hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));					
+					distanceList.add(Util.doubleFromString(distanceStr));
+				}
 				continue;
 			}
 
