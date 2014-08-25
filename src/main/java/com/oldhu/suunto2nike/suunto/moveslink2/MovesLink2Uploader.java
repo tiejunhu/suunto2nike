@@ -68,7 +68,7 @@ public class MovesLink2Uploader
 		File[] files = folder.listFiles();
 		for (File file : files) {
 			String fileName = file.getName().toLowerCase();
-			if (fileName.startsWith("log-") && fileName.endsWith(".xml")) {
+			if ((fileName.startsWith("log-") && fileName.endsWith(".xml")) || fileName.endsWith(".sml")) {
 				if (nikePlus == null) {
 					log.info("Login to Nike Plus");
 					nikePlus = new NikePlus();

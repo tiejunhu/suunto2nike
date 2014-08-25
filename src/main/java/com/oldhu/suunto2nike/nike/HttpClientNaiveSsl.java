@@ -47,7 +47,6 @@ public class HttpClientNaiveSsl
 
 			hcb.setSchemePortResolver(new SchemePortResolver() {
 
-				@Override
 				public int resolve(HttpHost host) throws UnsupportedSchemeException
 				{
 					if (host.getSchemeName().equals("https")) {

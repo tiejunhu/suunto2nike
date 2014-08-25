@@ -3,6 +3,7 @@ package com.oldhu.suunto2nike.suunto.moveslink2;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -23,26 +24,22 @@ import org.w3c.dom.NodeList;
 import com.oldhu.suunto2nike.Util;
 import com.oldhu.suunto2nike.suunto.SuuntoMove;
 
-public class XMLParser
-{
+public class XMLParser {
 	private static Logger log = Logger.getLogger(XMLParser.class);
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private static double PositionConstant = 57.2957795131;
 	private SuuntoMove suuntoMove = new SuuntoMove();
 	private boolean parseCompleted = false;
 
-	public boolean isParseCompleted()
-	{
+	public boolean isParseCompleted() {
 		return parseCompleted;
 	}
 
-	public SuuntoMove getSuuntoMove()
-	{
+	public SuuntoMove getSuuntoMove() {
 		return suuntoMove;
 	}
 
-	private Document getDocument(File xmlFile) throws Exception
-	{
+	private Document getXMLDocument(File xmlFile) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(xmlFile));
 		String firstLine = in.readLine();
 		if (!firstLine.trim().toLowerCase().equals("<?xml version=\"1.0\" encoding=\"utf-8\"?>")) {
@@ -65,8 +62,13 @@ public class XMLParser
 		return dBuilder.parse(stream);
 	}
 
-	private boolean pareseHeader(Element header) throws ParseException
-	{
+	private Document getSMLDocument(File xmlFile) throws Exception {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		return dBuilder.parse(new FileInputStream(xmlFile));
+	}
+	
+	private boolean pareseHeader(Element header) throws ParseException {
 		int moveType = Integer.parseInt(Util.getChildElementValue(header, "ActivityType"));
 		if (moveType != 3 && moveType != 93 && moveType != 82) {
 			log.info("    not a running move");
@@ -90,19 +92,26 @@ public class XMLParser
 		return true;
 	}
 
-	public XMLParser(File xmlFile) throws Exception
-	{
+	public XMLParser(File xmlFile) throws Exception {
 		log.debug("Parsing " + xmlFile.getName());
-		Document doc = getDocument(xmlFile);
-		Element header = (Element) doc.getElementsByTagName("header").item(0);
+		Element header = null;
+		Element samples = null;
+		if (xmlFile.getName().endsWith(".xml")) {
+			Document doc = getXMLDocument(xmlFile);
+			header = (Element) doc.getElementsByTagName("header").item(0);
+			samples = (Element) doc.getElementsByTagName("Samples").item(0);
+		}
+		if (xmlFile.getName().endsWith(".sml")) {
+			Document doc = getSMLDocument(xmlFile);
+			header = (Element) doc.getElementsByTagName("Header").item(0);
+			samples = (Element) doc.getElementsByTagName("Samples").item(0);			
+		}
 		if (pareseHeader(header)) {
-			Element samples = (Element) doc.getElementsByTagName("Samples").item(0);
 			parseSamples(samples);
 		}
 	}
 
-	private boolean parseSamples(Element samples) throws ArgumentOutsideDomainException
-	{
+	private boolean parseSamples(Element samples) throws ArgumentOutsideDomainException {
 		NodeList sampleList = samples.getElementsByTagName("Sample");
 
 		ArrayList<Double> timeList = new ArrayList<Double>();
@@ -142,7 +151,7 @@ public class XMLParser
 				String distanceStr = Util.getChildElementValue(sample, "Distance");
 				if (distanceStr != null) {
 					timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")) - pausedTime);
-					hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));					
+					hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
 					distanceList.add(Util.doubleFromString(distanceStr));
 				}
 				continue;
@@ -182,8 +191,7 @@ public class XMLParser
 		return true;
 	}
 
-	private double interpolate(PolynomialSplineFunction spline, double x) throws ArgumentOutsideDomainException
-	{
+	private double interpolate(PolynomialSplineFunction spline, double x) throws ArgumentOutsideDomainException {
 		try {
 			return spline.value(x);
 		} catch (ArgumentOutsideDomainException aode) {
@@ -192,36 +200,31 @@ public class XMLParser
 		}
 	}
 
-	private PolynomialSplineFunction generateTimeToDistanceSplineFunction(double[] timeArray, double[] distanceArray)
-	{
+	private PolynomialSplineFunction generateTimeToDistanceSplineFunction(double[] timeArray, double[] distanceArray) {
 		SplineInterpolator interpolator = new SplineInterpolator();
 		return interpolator.interpolate(timeArray, distanceArray);
 	}
 
-	private void populateDistanceArray(double[] distanceArray, ArrayList<Double> distanceList)
-	{
+	private void populateDistanceArray(double[] distanceArray, ArrayList<Double> distanceList) {
 		for (int i = 0; i < distanceList.size(); ++i) {
 			distanceArray[i] = distanceList.get(i).doubleValue();
 		}
 	}
 
 	// HR = sample data * 60
-	private void populateHRArray(double[] hrArray, ArrayList<Double> hrList, double[] timeArray)
-	{
+	private void populateHRArray(double[] hrArray, ArrayList<Double> hrList, double[] timeArray) {
 		for (int i = 0; i < hrList.size(); ++i) {
 			hrArray[i] = hrList.get(i).doubleValue() * 60;
 		}
 	}
 
-	private void populateTimeArray(double[] timeArray, ArrayList<Double> timeList)
-	{
+	private void populateTimeArray(double[] timeArray, ArrayList<Double> timeList) {
 		for (int i = 0; i < timeList.size(); ++i) {
 			timeArray[i] = timeList.get(i).doubleValue() * 1000;
 		}
 	}
 
-	private PolynomialSplineFunction generateTimeToHRSplineFunction(double[] timeArray, double[] hrArray)
-	{
+	private PolynomialSplineFunction generateTimeToHRSplineFunction(double[] timeArray, double[] hrArray) {
 		SplineInterpolator interpolator = new SplineInterpolator();
 		return interpolator.interpolate(timeArray, hrArray);
 	}
