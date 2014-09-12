@@ -122,6 +122,8 @@ public class XMLParser {
 		double pauseStartTime = 0.0;
 		boolean inPause = true;
 
+		int currentAltitude = 0;
+
 		for (int i = 0; i < sampleList.getLength(); ++i) {
 			Element sample = (Element) sampleList.item(i);
 
@@ -146,12 +148,16 @@ public class XMLParser {
 
 			if (sampleType == null)
 				continue;
-
+			
 			if (sampleType.equalsIgnoreCase("periodic")) {
 				String distanceStr = Util.getChildElementValue(sample, "Distance");
 				if (distanceStr != null) {
 					timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")) - pausedTime);
 					hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
+					int ele = Util.doubleFromString(Util.getChildElementValue(sample, "Altitude")).intValue();
+					if (ele > 0) {
+						currentAltitude = ele;
+					}
 					distanceList.add(Util.doubleFromString(distanceStr));
 				}
 				continue;
@@ -161,6 +167,9 @@ public class XMLParser {
 				double lat = Util.doubleFromString(Util.getChildElementValue(sample, "Latitude")) * PositionConstant;
 				double lon = Util.doubleFromString(Util.getChildElementValue(sample, "Longitude")) * PositionConstant;
 				int ele = Util.doubleFromString(Util.getChildElementValue(sample, "GPSAltitude")).intValue();
+				if (ele == 0) {
+					ele = currentAltitude;
+				}
 				String utc = Util.getChildElementValue(sample, "UTC");
 				suuntoMove.addTrackPoint(lat, lon, ele, utc);
 			}
