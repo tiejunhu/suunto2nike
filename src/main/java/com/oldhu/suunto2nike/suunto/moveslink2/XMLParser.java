@@ -94,24 +94,38 @@ public class XMLParser {
 
 	public XMLParser(File xmlFile) throws Exception {
 		log.debug("Parsing " + xmlFile.getName());
+		Document doc = null;
 		Element header = null;
-		Element samples = null;
+		
 		if (xmlFile.getName().endsWith(".xml")) {
-			Document doc = getXMLDocument(xmlFile);
+			doc = getXMLDocument(xmlFile);
 			header = (Element) doc.getElementsByTagName("header").item(0);
-			samples = (Element) doc.getElementsByTagName("Samples").item(0);
 		}
 		if (xmlFile.getName().endsWith(".sml")) {
-			Document doc = getSMLDocument(xmlFile);
+			doc = getSMLDocument(xmlFile);
 			header = (Element) doc.getElementsByTagName("Header").item(0);
-			samples = (Element) doc.getElementsByTagName("Samples").item(0);			
 		}
+
+		Element samples = (Element) doc.getElementsByTagName("Samples").item(0);
+		String rrData = Util.getChildElementValue(doc.getDocumentElement(), "R-R", "Data");
+		ArrayList<Integer> rr = getRRArray(rrData);
+		
 		if (pareseHeader(header)) {
-			parseSamples(samples);
+			parseSamples(samples, rr);
 		}
 	}
+	
+	private ArrayList<Integer> getRRArray(String rrData) {
+		if (rrData == null) return null;
+		String[] rrArray = rrData.split(" ");
+		ArrayList<Integer> result = new ArrayList<Integer>(rrArray.length);
+		for (String rr: rrArray) {
+			result.add(Integer.parseInt(rr));
+		}
+		return result;
+	}
 
-	private boolean parseSamples(Element samples) throws ArgumentOutsideDomainException {
+	private boolean parseSamples(Element samples, ArrayList<Integer> rr) throws ArgumentOutsideDomainException {
 		NodeList sampleList = samples.getElementsByTagName("Sample");
 
 		ArrayList<Double> timeList = new ArrayList<Double>();
@@ -121,7 +135,8 @@ public class XMLParser {
 		double pausedTime = 0.0;
 		double pauseStartTime = 0.0;
 		boolean inPause = true;
-
+		boolean hasHR = false;
+		
 		int currentAltitude = 0;
 
 		for (int i = 0; i < sampleList.getLength(); ++i) {
@@ -153,7 +168,11 @@ public class XMLParser {
 				String distanceStr = Util.getChildElementValue(sample, "Distance");
 				if (distanceStr != null) {
 					timeList.add(Util.doubleFromString(Util.getChildElementValue(sample, "Time")) - pausedTime);
-					hrList.add(Util.doubleFromString(Util.getChildElementValue(sample, "HR")));
+					String hrStr = Util.getChildElementValue(sample, "HR");
+					if (hrStr != null) {
+						hasHR = true;
+					}
+					hrList.add(Util.doubleFromString(hrStr));
 					int ele = Util.doubleFromString(Util.getChildElementValue(sample, "Altitude")).intValue();
 					if (ele > 0) {
 						currentAltitude = ele;
@@ -175,7 +194,7 @@ public class XMLParser {
 			}
 		}
 
-		double[] timeArray = new double[timeList.size()];
+ 		double[] timeArray = new double[timeList.size()];
 		double[] hrArray = new double[hrList.size()];
 		double[] distanceArray = new double[distanceList.size()];
 
@@ -183,8 +202,23 @@ public class XMLParser {
 		populateHRArray(hrArray, hrList, timeArray);
 		populateDistanceArray(distanceArray, distanceList);
 
-		PolynomialSplineFunction timeToHR = generateTimeToHRSplineFunction(timeArray, hrArray);
 		PolynomialSplineFunction timeToDistance = generateTimeToDistanceSplineFunction(timeArray, distanceArray);
+		
+		PolynomialSplineFunction timeToHR = null;
+		if (hasHR || rr == null) {
+			timeToHR = generateTimeToHRSplineFunction(timeArray, hrArray);			
+		} else {
+			timeArray = new double[rr.size()];
+			hrArray = new double[rr.size()];
+			double time = 0;
+			for (int i = 0; i < rr.size(); ++i) {
+				int value = rr.get(i);
+				time += value;
+				timeArray[i] = time;
+				hrArray[i] = 60000.0 / value; 
+			}
+			timeToHR = generateTimeToHRSplineFunction(timeArray, hrArray);			
+		}
 
 		double t = 0;
 		while (t < suuntoMove.getDuration()) {
