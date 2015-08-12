@@ -46,7 +46,7 @@ Currently tested with Quest and Ambit 2.
 Supported OS
 ------------
 
-Windows and Mac
+Windows, Mac and Linux
 
 Report Issue/Request Features
 -----------------------------
